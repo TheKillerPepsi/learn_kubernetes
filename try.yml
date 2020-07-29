@@ -1,0 +1,81 @@
+#try to irgendwas einen apache-webserver
+#https://github.com/kubernetes/examples/blob/master/guestbook/all-in-one/guestbook-all-in-one.yaml
+kind: service
+apiVersion: v1
+metadata:
+    name: apache-service 
+spec:
+    type: NodePort
+    selector:
+        app: apache
+    ports:
+      - nodePort: 30163
+      port: 8080
+      targetPort: 80
+
+---
++9
+kind: PersistantVolume
+apiVersion: v1
+metadata: 
+    name: apache-persistant-volume
+spec:
+    accessModes:
+      - ReadWriteOnce
+    hostPath:
+        path: /Users/pschlief/Desktop/kubernetes/apache_data
+    capacity:
+        storage: 128M
+
+---
+kind: PersistantVolumeClaim
+apiVersion: v1
+metadatat:
+    #pvc = persistant volume claim
+    name: apache_pvc
+spec:
+    resources:
+        requests:
+            storage: 64M
+    accessModes:
+      - ReadWriteOnce
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata: 
+    name: apache-pod
+    labels:
+        app: apache
+spec:
+    volumes:
+     volumeMounts:
+        - name: apache-pod-persistant-volume
+          persistantVolumeClaim:
+          claimName: apache_pvc
+         
+   
+    containers:
+      - name: apache-web
+      image: httpd:2.4
+       volumeMounts:
+        - name: apache-pod-persistant-volume
+          mountPath: /var/www/html
+      ports:
+        - containeport: 80
+        mountPath: /var/www/html
+
+---
+
+kind: Deployment
+apiversion: v1
+metadata:
+    name: apache-deployment
+spec:
+     # ich möchte gerne drei Apache-Pods haben
+    replicas: 3
+    strategy: RollingUpdate
+    selector:
+       matchLabels:
+           app: apache
