@@ -1,0 +1,51 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: apache-service
+spec: 
+  ports: 
+    - nodePort: 30163
+      port: 8080
+      targetPort: 80
+  selector: 
+    app: apache
+  type: NodePort
+---
+kind: Pod
+apiVersion: v1
+metadata: 
+    name: apache-pod
+    labels:
+        app: apache
+spec:
+    volumes:
+     volumeMounts:
+        - name: apache-pod-persistant-volume
+          persistantVolumeClaim:
+          claimName: apache_pvc
+         
+   
+    containers:
+      - name: apache-web
+        image: httpd:2.4
+        volumeMounts:
+          - name: apache-pod-persistant-volume
+            mountPath: /var/www/html
+        ports:
+          - containeport: 80
+          mountPath: /var/www/html
+
+---
+
+kind: Deployment
+apiversion: v1
+metadata:
+    name: apache-deployment
+spec:
+     # ich möchte gerne drei Apache-Pods haben
+    replicas: 3
+    strategy: RollingUpdate
+    selector:
+       matchLabels:
+           app: apache
