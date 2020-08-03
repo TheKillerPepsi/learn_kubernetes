@@ -1,0 +1,12 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testing-pod
+  labels:
+    app: give-hostname
+spec:
+  containers:
+    - name: nginx-tetsing
+      image: kubegoldenguide/nginx-hostname:1.0.1
+      ports:
+        - containerPort: 80
