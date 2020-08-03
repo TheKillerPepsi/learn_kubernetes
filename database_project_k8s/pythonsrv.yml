@@ -1,0 +1,12 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pythonsrv-pod
+  labels:
+    application-name: database-project
+    tier: backend
+spec:
+  containers:
+    - name: pythonsrv-cont
+      image: 
+   

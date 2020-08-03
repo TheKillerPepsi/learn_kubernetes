@@ -1,0 +1,14 @@
+#this service expose port 80 of our webserver pod to the wworld wide web
+kind: Service
+apiVersion: v1
+metadata:
+  name: expose-websrv-service
+spec:
+  type: NodePort
+  selector:
+    tier: frontend
+  ports:
+    - nodePort: 30163
+      port: 8080
+      targetPort: 80
+  

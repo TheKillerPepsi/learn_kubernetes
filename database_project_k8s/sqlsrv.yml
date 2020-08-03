@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mysqlsrv-pod
+  labels:
+    application-name: database-project
+    tier: frontend
+spec:
+  containers:
+    - name: mysqlsrv-cont
+      image: mysql:latest
+      ports:
+        - containerPort: 3306
