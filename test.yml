@@ -11,41 +11,56 @@ spec:
   selector: 
     app: apache
   type: NodePort
+
 ---
-kind: Pod
 apiVersion: v1
+kind: Pod
 metadata: 
     name: apache-pod
     labels:
         app: apache
 spec:
     volumes:
-     volumeMounts:
-        - name: apache-pod-persistant-volume
-          persistantVolumeClaim:
-          claimName: apache_pvc
-         
-   
+      - name: apache-vol
+        hostPath: 
+          path: "/Users/pschlief/Desktop/kubernetes/git/learn_kubernetes/apache_data"
     containers:
       - name: apache-web
         image: httpd:2.4
         volumeMounts:
-          - name: apache-pod-persistant-volume
+          - name: apache-vol
             mountPath: /var/www/html
         ports:
-          - containeport: 80
-          mountPath: /var/www/html
+          - containerPort: 80
 
 ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#     name: apache-deployment
+# spec:
+#      # ich möchte gerne drei Apache-Pods haben
+#     replicas: 3
+#     strategy: RollingUpdate
+#     selector:
+#        matchLabels:
+#            app: apache
+#     template:
+#         metadata:
+#           labels:
+#             app: apache
+#         spec:
+#           volumes:
+#             - name: apache-vol
+#               hostPath: 
+#                 path: "/Users/pschlief/Desktop/kubernetes/git/learn_kubernetes/apache_data"
+#           containers:
+#             - name: apache-web
+#               image: httpd:2.4
+#               volumeMounts:
+#                 - name: apache-vol
+#                   mountPath: /var/www/html
+#               ports:
+#                 - containerPort: 80
 
-kind: Deployment
-apiversion: v1
-metadata:
-    name: apache-deployment
-spec:
-     # ich möchte gerne drei Apache-Pods haben
-    replicas: 3
-    strategy: RollingUpdate
-    selector:
-       matchLabels:
-           app: apache
+
