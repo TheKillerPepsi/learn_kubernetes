@@ -5,9 +5,22 @@ metadata:
   labels:
     application-name: database-project
     tier: frontend
+    app: websrv
 spec:
+  #volumes:
+  #  - name: websrv-pv
+  #    persistentVolumeClaim:
+  #      claimName: websrv-pv-claim
+  volumes:
+    - name: websrv-dir
+      hostPath: 
+        path: /Users/pschlief/Desktop/kubernetes/git/learn_kubernetes/database_project_k8s/websrv_data
+    
   containers:
     - name: websrv-cont
       image:  webdevops/php-apache
+      volumeMounts:
+        - mountPath: /var/www/html
+          name: websrv-dir
       ports:
         - containerPort: 80
